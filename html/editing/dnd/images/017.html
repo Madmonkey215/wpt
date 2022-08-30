@@ -1,0 +1,68 @@
+<!doctype html>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/resources/testdriver.js"></script>
+<script src="/resources/testdriver-vendor.js"></script>
+<script src="/resources/testdriver-actions.js"></script>
+<head>
+<title>Dropping image on horizontal page scrollbar</title>
+<style type="text/css">
+p:first-child
+  {padding-left:1em;}
+div
+  {position:fixed;
+  bottom:0;
+  left:0;}
+img
+  {width:5px;
+  height:5px;}
+body
+  {width:3000px;}
+</style>
+<script type="application/ecmascript">
+function dragImage()
+  {event.dataTransfer.effectAllowed = 'copy';}
+function dropImage(event)
+  {document.querySelector('div').firstChild.nodeValue = 'PASS';}
+</script>
+</head>
+<body ondragenter="event.preventDefault()" ondragover="return false">
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEElEQVR42mNgaGD4D8YwBgAw9AX9Y9zBwwAAAABJRU5ErkJggg==" alt="PNG green pixel"/></p>
+<p>Drag little square above and drop it on vertical scrollbar. Word PASS should appear near scrollbar once you drop it.</p>
+<div>↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</div>
+</body>
+<script>
+const mouseMoveToCenter = element => {
+ const clientRect = element.getBoundingClientRect();
+ const centerX = (clientRect.left + clientRect.right) / 2;
+ const centerY = (clientRect.top + clientRect.bottom) / 2;
+ return new test_driver.Actions()
+ .pointerMove(centerX, centerY)
+ .send();
+};
+promise_test((t) => new Promise(async (resolve, reject) => {
+ const img = document.querySelector('img');
+ const div = document.querySelector('div');
+img.ondragstart = t.step_func((event) => {
+ dragImage();
+ resolve();
+});
+img.ondragend = t.step_func((event) => {
+ dropImage(event);
+ resolve();
+});
+try {
+ await mouseMoveToCenter(img);
+ await new test_driver.Actions()
+ .pointerDown()
+ .send()
+ await mouseMoveToCenter(div);
+ await new test_driver.Actions()
+ .pointerUp()
+ .send();
+} catch (e) {
+ reject(e);
+};
+}, 'Dragging the green image to the div below should turn it green.'));
+</script>
+</html>

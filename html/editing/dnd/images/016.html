@@ -1,5 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/resources/testdriver.js"></script>
+<script src="/resources/testdriver-vendor.js"></script>
+<script src="/resources/testdriver-actions.js"></script>
 <head>
 <title>Dropping image on vertical scrollbar of a scrollable block element</title>
 <style type="text/css">
@@ -25,4 +29,35 @@ function checkImage(event)
 <p>Drag little square above and drop it on scrollbar below. You should see word PASS when you drop it on scrollbar.</p>
 <div ondragenter="event.preventDefault()" ondragover="return false" ondrop="checkImage(event)">→ → → → → → → → → → → → → → → → → → → →</div>
 </body>
+<script>
+const mouseMoveToCenter = element => {
+ const clientRect = element.getBoundingClientRect();
+ const centerX = (clientRect.left + clientRect.right) / 2;
+ const centerY = (clientRect.top + clientRect.bottom) / 2;
+ return new test_driver.Actions()
+ .pointerMove(centerX, centerY)
+ .send();
+};
+
+promise_test((t) => new Promise(async (resolve, reject) => {
+ const img = document.querySelector('img');
+ const div = document.querySelector('div');
+div.ondrop = t.step_func((event) => {
+ checkImage(event);
+ resolve();
+});
+try {
+ await mouseMoveToCenter(img);
+ await new test_driver.Actions()
+ .pointerDown()
+ .send()
+ await mouseMoveToCenter(div);
+ await new test_driver.Actions()
+ .pointerUp()
+ .send();
+} catch (e) {
+ reject(e);
+};
+}, 'Dragging the green image to the div below should turn it green.'));
+</script>
 </html>
