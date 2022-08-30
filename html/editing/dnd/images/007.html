@@ -1,5 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/resources/testdriver.js"></script>
+<script src="/resources/testdriver-vendor.js"></script>
+<script src="/resources/testdriver-actions.js"></script>
 <head>
 <title>dataURL image drag and drop to iframe</title>
 <style type="text/css">
@@ -14,4 +18,35 @@ iframe
 <p>Drag circle above to the box below. It should be copied to the box once you drop it there.</p>
 <p><iframe src="helper-drop-image-here.xhtml">XHTML with image</iframe></p>
 </body>
+<script>
+const mouseMoveToCenter = element => {
+ const clientRect = element.getBoundingClientRect();
+ const centerX = (clientRect.left + clientRect.right) / 2;
+ const centerY = (clientRect.top + clientRect.bottom) / 2;
+ return new test_driver.Actions()
+ .pointerMove(centerX, centerY)
+ .send();
+};
+promise_test((t) => new Promise(async (resolve, reject) => {
+ await new Promise(loaded => window.onload = loaded);
+ const img = document.querySelector('img');
+ const iframe = document.querySelector('iframe');
+iframe.ondrop = t.step_func((event) => {
+ addImage(event)
+ resolve();
+});
+try {
+ await mouseMoveToCenter(img);
+ new test_driver.Actions()
+ .pointerDown()
+ .send()
+ await mouseMoveToCenter(iframe);
+ new test_driver.Actions()
+ .pointerUp()
+ .send();
+} catch (e) {
+ reject(e);
+};
+}, 'Dragging an image from one green iframe to another should turn the iframe green'));
+</script>
 </html>
