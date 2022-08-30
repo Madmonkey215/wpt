@@ -1,0 +1,65 @@
+<!doctype html>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/resources/testdriver.js"></script>
+<script src="/resources/testdriver-vendor.js"></script>
+<script src="/resources/testdriver-actions.js"></script>
+<head>
+<title>Dropping image on vertical object scrollbar</title>
+<style type="text/css">
+p:first-child
+  {padding-left:1em;}
+object
+  {height:6em;
+  width:3em;}
+img
+  {width:5px;
+  height:5px;}
+</style>
+<script type="application/ecmascript">
+function dragImage()
+  {event.dataTransfer.effectAllowed = 'copy';}
+function dropImage(event)
+  {document.querySelector('p + p').firstChild.nodeValue = 'PASS';}
+</script>
+</head>
+<body ondragenter="event.preventDefault()" ondragover="return false">
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEElEQVR42mNgaGD4D8YwBgAw9AX9Y9zBwwAAAABJRU5ErkJggg==" alt="PNG green pixel" ondragstart="dragImage()" ondragend="dropImage(event)"/></p>
+<p>Drag little square above and drop it on vertical scrollbar. Word PASS should appear once you drop it.</p>
+<object type="application/xhtml+xml" data="helper-drop-vertical-scrollbar.xhtml">XHTML document</object>
+</body>
+<script>
+const mouseMoveToCenter = element => {
+ const clientRect = element.getBoundingClientRect();
+ const centerX = (clientRect.left + clientRect.right) / 2;
+ const centerY = (clientRect.top + clientRect.bottom) / 2;
+ return new test_driver.Actions()
+ .pointerMove(centerX, centerY)
+ .send();
+};
+promise_test((t) => new Promise(async (resolve, reject) => {
+ const img = document.querySelector('img');
+ const object = document.querySelector('object');
+img.ondragstart = t.step_func((event) => {
+ dragImage();
+ resolve();
+});
+img.ondragend = t.step_func((event) => {
+ dropImage(event);
+ resolve();
+});
+try {
+ await mouseMoveToCenter(img);
+ await new test_driver.Actions()
+ .pointerDown()
+ .send()
+ await mouseMoveToCenter(object);
+ await new test_driver.Actions()
+ .pointerUp()
+ .send();
+} catch (e) {
+ reject(e);
+};
+}, 'Dragging the green image to the object below should turn it green.'));
+</script>
+</html>
