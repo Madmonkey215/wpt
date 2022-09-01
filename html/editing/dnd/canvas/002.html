@@ -1,5 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/resources/testdriver.js"></script>
+<script src="/resources/testdriver-vendor.js"></script>
+<script src="/resources/testdriver-actions.js"></script>
+<script src="../resources/test-helper.js"></script>
 <head>
 <title>Drag and drop: dropping block element onto canvas</title>
 <style type="text/css">
@@ -12,7 +17,7 @@ div
 function paint(color)
   {var canvas = document.querySelector('canvas'),
   c = canvas.getContext('2d');
-  c.fillStyle = color;
+  c.fillStyle = 'green';
   c.beginPath();
   c.moveTo(0,0);
   c.lineTo(100,0);
@@ -32,4 +37,17 @@ function start(event)
   <canvas width="100" height="100" ondragenter="event.preventDefault()" ondragover="return false" ondrop="paint(event.dataTransfer.getData('text/plain'))">Canvas</canvas>
 </p>
 </body>
+<script>
+const canvas = document.querySelector('canvas');
+const div = document.querySelector('div');
+ function onDropCallBack(event) {
+  paint(event.dataTransfer.getData('text/plain'));
+  let style = getComputedStyle(div);
+  let currentColor = "rgb(0, 128, 0)";
+  assert_equals(style.getPropertyValue("background-color"), currentColor);
+  return true;
+ }
+
+  dragDropTest(div, canvas, onDropCallBack, 'Dragging the canvas to the bottom div should turn it green');
+</script>
 </html>
