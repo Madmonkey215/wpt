@@ -1,5 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script src="/resources/testdriver.js"></script>
+<script src="/resources/testdriver-vendor.js"></script>
+<script src="/resources/testdriver-actions.js"></script>
+<script src="../resources/test-helper.js"></script>
 <head>
 <title>Image drag and drop</title>
 <style type="text/css">
@@ -26,7 +31,18 @@ function addImage(event)
 <div
   ondragenter="event.preventDefault()"
   ondragover="return false"
-  ondrop="addImage(event)"
 />
+<script>
+const img = document.querySelector('img');
+const div = document.querySelector('div');
+  function onDropCallBack(event) {
+    addImage(event);
+    var img = document.querySelector('img');
+    assert_equals(img.src, event.dataTransfer.getData('text/uri-list').replace(/\r\n$/,''));
+    return true;
+  }
+
+  dragDropTest(img, div, onDropCallBack, 'Dragging the image to the bottom div should turn it green');
+</script>
 </body>
 </html>
