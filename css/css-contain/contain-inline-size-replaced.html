@@ -28,10 +28,14 @@
       poster="support/blue-100x100.png"></video>
     <video class="inline-contained" data-expected-width="0" data-expected-height="100" poster="support/blue-100x100.png"
       controls></video>
-    <video class="inline-contained" data-expected-width="0" data-expected-height="240" src="support/white.webm"
-      controls></video>
-    <video class="inline-contained" data-expected-width="0" data-expected-height="240" src="support/white.webm"
-      controls></video>
+    <video class="inline-contained" data-expected-width="0" data-expected-height="240" controls>
+      <source src="support/white.mp4">
+      <source src="support/white.webm">
+    </video>
+    <video class="inline-contained" data-expected-width="0" data-expected-height="240" controls>
+      <source src="support/white.mp4">
+      <source src="support/white.webm">
+    </video>
     <br>
 
     <!-- audio element with controls, and a few other misc replaced elements: -->
@@ -69,10 +73,14 @@
       poster="support/blue-100x100.png"></video>
     <video class="inline-contained" data-expected-width="100" data-expected-height="0" poster="support/blue-100x100.png"
       controls></video>
-    <video class="inline-contained" data-expected-width="320" data-expected-height="0" src="support/white.webm"
-      controls></video>
-    <video class="inline-contained" data-expected-width="320" data-expected-height="0" src="support/white.webm"
-      controls></video>
+    <video class="inline-contained" data-expected-width="320" data-expected-height="0" controls>
+      <source src="support/white.mp4">
+      <source src="support/white.webm">
+    </video>
+    <video class="inline-contained" data-expected-width="320" data-expected-height="0" controls>
+      <source src="support/white.mp4">
+      <source src="support/white.webm">
+    </video>
 
     <audio class="inline-contained" data-expected-width="300" data-expected-height="0" controls></audio>
     <canvas class="inline-contained" data-expected-width="300" data-expected-height="0"></canvas>
